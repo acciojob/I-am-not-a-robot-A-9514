@@ -1,89 +1,64 @@
-function shuffle(arr){
-    let currentIndex=arr.length;
-    let randomIndex;
-    let tempIndex;
-    while(currentIndex){
-        randomIndex=Math.floor(Math.random()*5);
+//your code here
+const main = document.querySelector("main");
+const verify = document.getElementById("verify");
+const reset = document.getElementById("reset");
+const para = document.getElementById("para");
 
-        currentIndex--;
-        tempIndex=arr[currentIndex];
-        arr[currentIndex]=arr[randomIndex];
-        arr[randomIndex]=tempIndex;
-    }
+// console.log(main);
+let arrClasses = ["img1" ,"img2","img3","img4","img5" ]
+let randomPhotoClass = arrClasses[Math.round(Math.random()*5)];
+// console.log(randomPhotoUrl);
+const randomPhoto = document.createElement("img");
+randomPhoto.className = randomPhotoClass;
+main.appendChild(randomPhoto);
+
+
+const imgs = document.getElementsByTagName("img");
+let clicked = 0;
+let selected = [];
+for (let i=0 ;i<imgs.length;i++){
+    const currentImg = imgs[i];
+    currentImg.addEventListener("click",()=>{
+        selected.push(currentImg);
+        clicked++;
+        currentImg.classList.add("selected");  
+        if(clicked === 1){
+              reset.style.display = "flex";
+            reset.addEventListener("click",()=>{
+                clicked = 0;
+                for(let val of selected) val.classList.remove("selected");
+                reset.style.display = "none"; 
+                para.style.display = "none";
+            })
+        }
+        else if(clicked === 2){
+            verify.style.display = "flex";
+        }
+        else{
+            verify.style.display = "none";
+        }
+    })
 }
 
-let arr=["img1","img2","img3","img4","img5"];
-shuffle(arr);
-
-
-
-let repeatind=Math.floor(Math.random()*(arr.length-1));
-
-let at=Math.floor(Math.random()*(arr.length-1));
-
-arr.splice(repeatind,0,arr[at]);
-let main=document.getElementById("main");
-let inner="";
-arr.forEach((ele)=>{
- inner+=`<img class=${ele}>`;
-
-});
-main.innerHTML=inner;
-
-const images = document.querySelectorAll("img");
-// console.log(images);
-const para=document.getElementById("para");
-let selected =[];
-const verify=document.getElementById("verify");
-verify.onclick=()=>{
-    if(selected[0]===selected[1]){
-        para.innerText="You are a human. Congratulations!";
-        verify.style.display="none";
+verify.addEventListener("click",()=>{
+    let classes = [];
+    for(let val of selected){
+        classes.push(val.className);
+    }
+    let sameClass = true;
+    for(let i = 0; i < classes.length-1; i++){
+         if(classes[i] !== classes[i+1]){
+            sameClass = false;
+            break;
+         }
+    }
+    if(sameClass === true){
+        para.style.display = "flex";
+       para.innerText = "You are a human. Congratulations!";
     }
     else{
-        para.innerText="We can't verify you as a human. You selected the non-identical tiles.";
-        verify.style.display="none";
+        para.style.display = "flex";
+        para.innerText = "We can't verify you as a human. You selected the non-identical tiles.";
     }
-}
-
-const undo=document.getElementById("undo");
-undo.onclick=()=>{
-    selected=[];
-    verify.style.display="none";
-    // reset.style.display="none";
-    undo.style.display="none";
-    para.innerText="";
-    images.forEach((img)=>{
-        img.classList.remove("selected");
-    });
-};
-const reset=document.getElementById("reset");
-reset.onclick=()=>{
-  location.reload();
-};
-verify.style.display="none";
-// reset.style.display="none";
-undo.style.display="none";
-
-images.forEach(img=>{
-    // img.addEventListerner("click",()=>{
-        // console.log(img);
-
-        img.addEventListener("click",()=>{
-            if(img.classList.contains("selected")){
-                return;
-            }
-            img.classList.add("selected");
-            selected.push(img.classList[0]);
-            // reset.style.display="block";
-            undo.style.display="block";
-
-            if(selected.length==2){
-                verify.style.display="block";
-            }
-            else{
-                verify.style.display="none";
-            }
-        });
-
-    });
+    verify.style.display = "none";
+})
